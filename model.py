@@ -29,6 +29,11 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS, Chroma
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, DirectoryLoader
 
+
+# Load model directly
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+
 # Configurables
 CONFIG = {
     "base_model": "microsoft/BiomedNLP-PubMedBERT-base-uncased-abstract-fulltext",
@@ -44,6 +49,12 @@ CONFIG = {
     "top_k_default": 5,
     "temperature": 0.1,
 }
+
+# from transformers import BitsAndBytesConfig
+
+# quant_config = BitsAndBytesConfig(load_in_8bit=True)
+# model = AutoModelForCausalLM.from_pretrained(CONFIG["medical_lm"], quantization_config=quant_config)
+# tokenizer = AutoTokenizer.from_pretrained(CONFIG["medical_lm"])
 
 # Setup logging
 import logging
@@ -719,61 +730,52 @@ class PersonalizedRAGAdapter:
 
 class MedicalLanguageModel:
     """Interface to medical LLM"""
-    
-    def __init__(self, model_name: str, device: str = "cuda", 
-                 temperature: float = 0.1, max_length: int = 1024):
+
+    def __init__(self, model_name: str, device: str = "auto", 
+                 temperature: float = 0.7, max_length: int = 512):
         self.model_name = model_name
-        self.device = device
+        self.device = device if torch.cuda.is_available() else "cpu"  # ✅ Auto-detect device
         self.temperature = temperature
         self.max_length = max_length
         self.tokenizer, self.model = self._load_model()
-        
+
     def _load_model(self):
         """Load the language model"""
-        logger.info(f"Loading medical LLM: {self.model_name}")
-        
-        # Configure quantization for efficiency
-        bnb_config = BitsAndBytesConfig(
-            load_in_8bit=True,
-            llm_int8_threshold=6.0,
-            llm_int8_has_fp16_weight=False
-        )
-        
+        logger.info(f"🚀 Loading medical LLM: {self.model_name} on {self.device}")
+
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         model = AutoModelForCausalLM.from_pretrained(
-        self.model_name,
-        device_map="auto",
-        trust_remote_code=True,
-        load_in_8bit=False  # Disable 8-bit mode
-    )
-        
-        logger.info(f"Model loaded: {self.model_name}")
+            self.model_name,
+            device_map=self.device,  # ✅ Correctly map device
+            trust_remote_code=True
+        )
+
+        logger.info(f"✅ Model loaded successfully on {self.device}")
         return tokenizer, model
-    
+
     def generate(self, prompt: str, max_length: Optional[int] = None) -> str:
         """Generate text with the medical LLM"""
         max_tokens = max_length or self.max_length
-        
         inputs = self.tokenizer(prompt, return_tensors="pt").to(self.device)
-        
+
         # Generate with the model
         with torch.no_grad():
             outputs = self.model.generate(
                 inputs.input_ids,
                 max_length=max_tokens,
                 temperature=self.temperature,
-                do_sample=(self.temperature > 0),
+                do_sample=True,
                 top_p=0.95,
                 pad_token_id=self.tokenizer.eos_token_id
             )
-            
+
         # Decode and clean the output
         response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        # Remove the prompt from the response
-        if response.startswith(prompt):
+
+        # ✅ Improved prompt cleaning
+        if prompt.lower() in response.lower():
             response = response[len(prompt):].strip()
-            
+
         return response
 
 # ------------------------------ ADAPTIVE MED-RAG MAIN SYSTEM ------------------------------
