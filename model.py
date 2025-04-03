@@ -21,13 +21,13 @@ from transformers import (
     TrainingArguments,
 )
 from peft import LoraConfig, get_peft_model
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import FAISS, Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.document_loaders import PyPDFLoader, TextLoader, DirectoryLoader
 from langchain.chains import RetrievalQA
 from sklearn.metrics.pairwise import cosine_similarity
 from tqdm.auto import tqdm
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS, Chroma
+from langchain_community.document_loaders import PyPDFLoader, TextLoader, DirectoryLoader
 
 # Configurables
 CONFIG = {
@@ -54,12 +54,26 @@ logging.basicConfig(
 )
 logger = logging.getLogger("adaptive-med-rag")
 
-# ------------------------------ DATA LOADING & PROCESSING ------------------------------
+# ------------------------------ DEBUGGING: CHECK FILES ------------------------------
+print("Checking medical_data directory...")
+print(f"Files present: {os.listdir('./medical_data/')}")
+
+# Load and print the first few lines of the file
+file_path = "./medical_data/sample_medical_info.txt"
+if os.path.exists(file_path):
+    with open(file_path, "r") as f:
+        text = f.read()
+    print(f"Loaded document content (first 500 chars):\n{text[:500]}")
+else:
+    print("Error: sample_medical_info.txt is missing!")
+
+
+# ------------------------------ CLASS DEFINITION ------------------------------
 
 class MedicalDataProcessor:
     """Process and load medical documents for RAG system"""
-    
-    def __init__(self, data_dir: str, chunk_size: int = 384, chunk_overlap: int = 128):
+
+    def __init__(self, data_dir: str, chunk_size: int = 384, chunk_overlap: int = 100):
         self.data_dir = data_dir
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
@@ -68,85 +82,117 @@ class MedicalDataProcessor:
             chunk_overlap=chunk_overlap,
             separators=["\n\n", "\n", " ", ""]
         )
-        
+
     def load_documents(self) -> List:
         """Load documents from multiple sources"""
         logger.info(f"Loading documents from {self.data_dir}")
-        
+
         if not os.path.exists(self.data_dir):
             os.makedirs(self.data_dir)
             logger.warning(f"Data directory {self.data_dir} was created but empty")
             return []
-            
-        loader = DirectoryLoader(
-            self.data_dir,
-            glob="**/*.*",
-            loader_cls=self._get_loader_by_extension,
-            show_progress=True,
-            use_multithreading=True
-        )
-        documents = loader.load()
-        logger.info(f"Loaded {len(documents)} documents")
-        return documents
-    
-    def _get_loader_by_extension(self, file_path: str):
-        """Determine appropriate loader based on file extension"""
-        if file_path.endswith('.pdf'):
-            return PyPDFLoader(file_path)
-        else:
-            return TextLoader(file_path)
-    
+
+        try:
+            loader = DirectoryLoader(
+                self.data_dir, glob="*.txt", loader_cls=TextLoader
+            )
+            documents = loader.load()
+            logger.info(f"✅ Successfully loaded {len(documents)} documents.")
+            return documents
+        except Exception as e:
+            logger.error(f"❌ Error loading documents: {e}")
+            return []
+
     def split_documents(self, documents: List) -> List:
         """Split documents into chunks for embedding"""
         logger.info(f"Splitting {len(documents)} documents into chunks")
+
+        if not documents:
+            logger.error("❌ No documents provided to split.")
+            return []
+
+        # Try chunking
         chunks = self.text_splitter.split_documents(documents)
-        logger.info(f"Created {len(chunks)} document chunks")
+
+        if not chunks:
+            print("❌ No chunks were created! Check text splitting logic.")
+        else:
+            print(f"✅ Successfully created {len(chunks)} chunks.")
+            for i, chunk in enumerate(chunks[:3]):  # Print first 3 chunks
+                print(f"🔹 Chunk {i+1}:\n{chunk.page_content}\n")
+
         return chunks
-    
-    def process(self) -> List:
+
+    def process(self) -> list:
         """Process all documents: load and split into chunks"""
         documents = self.load_documents()
+
+        # 🚀 Debug: Print document count
+        print(f"✅ Debug: Loaded {len(documents)} documents.")
+
+        if documents:
+            print(f"🔹 First document preview: {documents[0].page_content[:200]}")
+
         chunks = self.split_documents(documents)
+
+        # 🚀 Debug: Print chunk count
+        print(f"✅ Debug: Created {len(chunks)} chunks.")
+
+        if chunks:
+            print(f"🔹 First chunk preview: {chunks[0].page_content[:200]}")
+
         return chunks
+
 
 # ------------------------------ VECTOR STORE & EMBEDDINGS ------------------------------
 
 class MedicalVectorStore:
     """Manage vector embeddings and retrieval for medical documents"""
-    
+
     def __init__(self, embedding_model_name: str, index_path: str):
         self.embedding_model_name = embedding_model_name
         self.index_path = index_path
         self.embeddings = self._init_embeddings()
-        
+
     def _init_embeddings(self):
         """Initialize the embedding model"""
         logger.info(f"Initializing embeddings with model: {self.embedding_model_name}")
-        model_kwargs = {'device': CONFIG['device']}
+        model_kwargs = {'device': CONFIG.get('device', 'cpu')}  # Default to CPU
         encode_kwargs = {'normalize_embeddings': True}
+
         return HuggingFaceEmbeddings(
             model_name=self.embedding_model_name,
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs
         )
-    
+
     def create_or_load_index(self, chunks=None):
-        """Create new vector index or load existing one"""
-        if os.path.exists(self.index_path) and os.listdir(self.index_path):
+        """Create a new vector index or load an existing one"""
+        faiss_index_file = os.path.join(self.index_path, "index.faiss")
+        faiss_config_file = os.path.join(self.index_path, "config.pkl")
+
+        # Debug: Print the number of chunks received
+        print(f"🚀 Debug: Received {len(chunks) if chunks else 0} chunks for indexing.")
+
+        if os.path.exists(faiss_index_file) and os.path.exists(faiss_config_file):
             logger.info(f"Loading existing vector store from {self.index_path}")
-            return FAISS.load_local(self.index_path, self.embeddings)
-        
+            try:
+                return FAISS.load_local(self.index_path, self.embeddings)
+            except Exception as e:
+                logger.error(f"Failed to load FAISS index: {e}")
+                raise RuntimeError("Error loading FAISS index, consider rebuilding it.")
+
         if not chunks:
-            raise ValueError("No chunks provided to create new vector index")
-            
+            raise ValueError("❌ No chunks provided to create new vector index. Check document processing.")
+
         logger.info(f"Creating new vector index with {len(chunks)} chunks")
         vector_store = FAISS.from_documents(chunks, self.embeddings)
-        
+
         # Save the vector store
         os.makedirs(self.index_path, exist_ok=True)
         vector_store.save_local(self.index_path)
-        logger.info(f"Saved vector store to {self.index_path}")
-        
+        logger.info(f"✅ Saved vector store to {self.index_path}")
+
         return vector_store
 
 # ------------------------------ ADAPTIVE RAG COMPONENTS ------------------------------
@@ -695,11 +741,11 @@ class MedicalLanguageModel:
         
         tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         model = AutoModelForCausalLM.from_pretrained(
-            self.model_name,
-            quantization_config=bnb_config,
-            device_map="auto",
-            trust_remote_code=True
-        )
+        self.model_name,
+        device_map="auto",
+        trust_remote_code=True,
+        load_in_8bit=False  # Disable 8-bit mode
+    )
         
         logger.info(f"Model loaded: {self.model_name}")
         return tokenizer, model
@@ -736,208 +782,169 @@ class AdaptiveMedRAG:
     """Main system combining all RAG innovations"""
     
     def __init__(self, config=None):
-        self.config = config or CONFIG
+        if config is None:
+            raise ValueError("❌ Config cannot be None. Ensure you provide a valid configuration.")
+
+        self.config = config
+        
+        # Log config keys for debugging
+        logger.info(f"Loaded Config Keys: {list(self.config.keys())}")
         
         # Initialize components
         self._init_components()
         
+
     def _init_components(self):
         """Initialize all system components"""
-        logger.info("Initializing Adaptive Med-RAG components")
+        logger.info("🔧 Initializing Adaptive Med-RAG components...")
         
-        # 1. Data processor
+        # 1. Data Processor
         self.data_processor = MedicalDataProcessor(
-            self.config["data_dir"],
-            chunk_size=self.config["chunk_size"],
-            chunk_overlap=self.config["chunk_overlap"]
+            self.config.get("data_dir", "./data"),
+            chunk_size=self.config.get("chunk_size", 512),
+            chunk_overlap=self.config.get("chunk_overlap", 50)
         )
         
-        # 2. Vector store
+        # 2. Process Documents
+        logger.info("📂 Processing documents for chunking...")
+        chunks = self.data_processor.process()
+        
+        if not chunks:
+            logger.error("❌ No valid documents found in data_dir. Please check input files.")
+            raise ValueError("No valid documents found for processing.")
+
+        # 3. Vector Store
         self.vector_store = MedicalVectorStore(
-            self.config["embedding_model"],
-            self.config["index_path"]
+            self.config.get("embedding_model", "default-embedding"),
+            self.config.get("index_path", "./index")
         )
         
-        # 3. Latent memory adapter
-        self.memory = LatentMemoryAdapter(self.config["cache_dir"])
+        # 4. Create or Load Index
+        logger.info(f"📌 Creating/loading index with {len(chunks)} chunks...")
+        try:
+            self.vector_store.create_or_load_index(chunks)
+        except Exception as e:
+            logger.error(f"❌ Failed to create/load index: {e}")
+            raise
         
-        # 4. Base retriever
+        # 5. Latent Memory Adapter
+        self.memory = LatentMemoryAdapter(self.config.get("cache_dir", "./cache"))
+        
+        # 6. Base Retriever
         self.base_retriever = AdaptiveRetriever(
-            self.vector_store.create_or_load_index(),
+            self.vector_store,
             self.memory,
-            default_k=self.config["top_k_default"]
+            default_k=self.config.get("top_k_default", 5)
         )
         
-        # 5. Language model
-        self.lm = MedicalLanguageModel(
-            self.config["medical_lm"],
-            device=self.config["device"],
-            temperature=self.config["temperature"]
-        )
+        # 7. Language Model (Safe Initialization)
+        try:
+            self.lm = MedicalLanguageModel(
+                self.config.get("medical_lm", "default-medical-lm"),
+                device=self.config.get("device", "cpu"),
+                temperature=self.config.get("temperature", 0.7)
+            )
+        except Exception as e:
+            logger.error(f"❌ Failed to load MedicalLanguageModel: {e}")
+            raise
         
-        # 6. Advanced retrievers
+        # 8. Advanced Retrievers
         self.soar = SelfOptimizingAdaptiveRetriever(
-            self.vector_store.create_or_load_index(),
+            self.vector_store,
             self.memory,
-            default_k=self.config["top_k_default"]
+            default_k=self.config.get("top_k_default", 5)
         )
         
         self.cot_retriever = CoTRetriever(self.base_retriever, self.lm)
         self.contrastive = ContrastiveRetriever(self.base_retriever, self.lm)
         self.sc_rag = SelfConsistencyRAG(self.base_retriever, self.lm)
         
-        logger.info("All components initialized")
+        logger.info("✅ All components initialized successfully")
+
     
     def index_documents(self):
         """Process and index documents for the RAG system"""
-        logger.info("Processing and indexing medical documents")
+        logger.info("📂 Processing and indexing medical documents...")
         
         # Process documents
         chunks = self.data_processor.process()
         
         if not chunks:
-            logger.warning("No documents found to index")
+            logger.warning("⚠️ No documents found to index. Skipping indexing.")
             return False
             
         # Create vector index
-        self.vector_store.create_or_load_index(chunks)
-        logger.info(f"Successfully indexed {len(chunks)} document chunks")
-        return True
+        try:
+            self.vector_store.create_or_load_index(chunks)
+            logger.info(f"✅ Successfully indexed {len(chunks)} document chunks")
+            return True
+        except Exception as e:
+            logger.error(f"❌ Failed to index documents: {e}")
+            return False
     
     def _choose_retrieval_strategy(self, query: str) -> str:
         """Determine best retrieval strategy based on query analysis"""
-        # Analyze query complexity - in real system would use more sophisticated analysis
         query_lower = query.lower()
-        
-        # Check for comparison indicators
+
+        # Strategy conditions
         if any(term in query_lower for term in ["versus", "vs", "compared to", "difference between"]):
             return "contrastive"
             
-        # Check for complex reasoning indicators
         if any(term in query_lower for term in ["why", "how", "explain", "mechanism", "pathway"]):
             return "cot"
             
-        # Check for potential ambiguity
         if "?" in query and len(query.split()) > 15:
             return "soar"
             
-        # Default strategy
         return "standard"
         
     def answer_medical_query(self, query: str, user_id: Optional[str] = None, 
                              strategy: Optional[str] = None, explain: bool = False) -> Dict:
         """Main entry point for answering medical queries"""
-        logger.info(f"Processing medical query: {query[:50]}...")
+        logger.info(f"🔎 Processing medical query: {query[:50]}...")
         
-        # 1. Determine retrieval strategy if not provided
+        # 1. Determine retrieval strategy
         if not strategy:
             strategy = self._choose_retrieval_strategy(query)
-            logger.info(f"Selected strategy: {strategy}")
-            
+            logger.info(f"📌 Selected strategy: {strategy}")
+        
         # 2. Execute appropriate retrieval strategy
-        if strategy == "standard":
-            retrieval_result = self.base_retriever.retrieve(query)
-            context = retrieval_result.get_context_text()
-            retrieval_info = {"strategy": "standard", "docs_retrieved": len(retrieval_result.documents)}
-            
-        elif strategy == "soar":
-            retrieval_result = self.soar.adaptive_retrieve(query)
-            context = retrieval_result.get_context_text()
-            retrieval_info = {"strategy": "soar", "docs_retrieved": len(retrieval_result.documents)}
-            
-        elif strategy == "cot":
-            retrieval_results = self.cot_retriever.multi_hop_retrieve(query)
-            context = self.cot_retriever.get_combined_context(retrieval_results)
-            retrieval_info = {
-                "strategy": "cot", 
-                "steps": len(retrieval_results),
-                "total_docs": sum(len(r.documents) for r in retrieval_results)
-            }
-            
-        elif strategy == "contrastive":
-            retrieval_results = self.contrastive.retrieve_contrasting_perspectives(query)
-            context = self.contrastive.get_balanced_context(retrieval_results)
-            retrieval_info = {
-                "strategy": "contrastive",
-                "perspectives": len(retrieval_results),
-                "total_docs": sum(len(r.documents) for r in retrieval_results)
-            }
-            
-        elif strategy == "consistency":
-            answer, consistency_score = self.sc_rag.generate_consistent_response(query)
-            # Return early since this strategy generates the answer directly
-            return {
-                "query": query,
-                "answer": answer,
-                "retrieval": {"strategy": "consistency", "consistency_score": consistency_score},
-                "sources": ["Self-consistency RAG"]
-            }
-            
-        else:
-            raise ValueError(f"Unknown retrieval strategy: {strategy}")
-            
-        # 3. Generate answer with appropriate prompt
-        if explain:
-            prompt = f"""
-            Please answer the following medical question based on the retrieved context.
-            Include a clear explanation of your reasoning and highlight any uncertainties.
-            
-            Context:
-            {context}
-            
-            Question: {query}
-            
-            Answer with explanation:
-            """
-        else:
-            prompt = f"""
-            Please provide a precise, factual answer to the medical question based only on 
-            the provided context. If the context doesn't contain sufficient information, 
-            state this clearly rather than speculating.
-            
-            Context:
-            {context}
-            
-            Question: {query}
-            
-            Answer:
-            """
-            
-        answer = self.lm.generate(prompt)
+        retrieval_result, context, retrieval_info = None, "", {}
         
-        # 4. Extract sources for attribution
-        if strategy in ["standard", "soar"]:
-            sources = retrieval_result.get_sources()
-        else:
-            # Combine sources from multiple retrievals
-            sources = []
-            for result in retrieval_results:
-                sources.extend(result.get_sources())
-            # Remove duplicates while preserving order
-            sources = list(dict.fromkeys(sources))
+        try:
+            if strategy == "standard":
+                retrieval_result = self.base_retriever.retrieve(query)
+                context = retrieval_result.get_context_text()
+                retrieval_info = {"strategy": "standard", "docs_retrieved": len(retrieval_result.documents)}
+                
+            elif strategy == "soar":
+                retrieval_result = self.soar.adaptive_retrieve(query)
+                context = retrieval_result.get_context_text()
+                retrieval_info = {"strategy": "soar", "docs_retrieved": len(retrieval_result.documents)}
+                
+            elif strategy == "cot":
+                retrieval_results = self.cot_retriever.multi_hop_retrieve(query)
+                context = self.cot_retriever.get_combined_context(retrieval_results)
+                retrieval_info = {"strategy": "cot", "steps": len(retrieval_results)}
+                
+            elif strategy == "contrastive":
+                retrieval_results = self.contrastive.retrieve_contrasting_perspectives(query)
+                context = self.contrastive.get_balanced_context(retrieval_results)
+                retrieval_info = {"strategy": "contrastive", "perspectives": len(retrieval_results)}
+                
+            elif strategy == "consistency":
+                answer, consistency_score = self.sc_rag.generate_consistent_response(query)
+                return {"query": query, "answer": answer, "retrieval": {"strategy": "consistency"}, "sources": ["Self-consistency RAG"]}
+            
+            else:
+                raise ValueError(f"Unknown retrieval strategy: {strategy}")
+        except Exception as e:
+            logger.error(f"❌ Retrieval failed: {e}")
+            return {"query": query, "error": "Retrieval failed"}
         
-        # 5. Return complete response
-        return {
-            "query": query,
-            "answer": answer,
-            "retrieval": retrieval_info,
-            "sources": sources
-        }
-        
-    def personalized_medical_query(self, query: str, user_id: str) -> Dict:
-        """Answer with personalization based on user history"""
-        # Initialize personalized adapter for this user
-        personal_adapter = PersonalizedRAGAdapter(self.base_retriever, user_id)
-        
-        # Get personalized retrieval
-        retrieval_result = personal_adapter.personalized_retrieve(query)
-        context = retrieval_result.get_context_text()
-        
-        # Generate answer
+        # 3. Generate answer
         prompt = f"""
-        Please provide a precise, factual answer to the medical question based only on 
-        the provided context. If the context doesn't contain sufficient information, 
-        state this clearly rather than speculating.
+        Please answer the following medical question based on the retrieved context.
         
         Context:
         {context}
@@ -947,29 +954,17 @@ class AdaptiveMedRAG:
         Answer:
         """
         
-        answer = self.lm.generate(prompt)
+        try:
+            answer = self.lm.generate(prompt)
+        except Exception as e:
+            logger.error(f"❌ Language model generation failed: {e}")
+            return {"query": query, "error": "Language model generation failed"}
         
-        # Return response with personalization info
-        return {
-            "query": query,
-            "answer": answer,
-            "retrieval": {
-                "strategy": "personalized",
-                "docs_retrieved": len(retrieval_result.documents),
-                "user_id": user_id
-            },
-            "sources": retrieval_result.get_sources(),
-            "topics": personal_adapter.preferences.get("topic_interests", {})
-        }
-    
-    def record_user_feedback(self, query: str, sources: List[str], 
-                             feedback_score: float, user_id: str):
-        """Record user feedback for personalization"""
-        personal_adapter = PersonalizedRAGAdapter(self.base_retriever, user_id)
-        personal_adapter.record_feedback(query, sources, feedback_score)
-        logger.info(f"Recorded feedback from user {user_id}: {feedback_score}")
-
-
+        # 4. Extract sources
+        sources = retrieval_result.get_sources() if retrieval_result else []
+        
+        # 5. Return complete response
+        return {"query": query, "answer": answer, "retrieval": retrieval_info, "sources": sources}
 # ------------------------------ EVALUATION & BENCHMARKING ------------------------------
 
 class MedicalRAGEvaluator:
