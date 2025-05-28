@@ -1,0 +1,76 @@
+
+# Diabetes Type 2 Treatment Guidelines
+
+Type 2 diabetes is characterized by insulin resistance and relative insulin deficiency. Treatment typically involves lifestyle modifications, oral medications, and sometimes insulin therapy.
+
+## First-line treatments:
+- Lifestyle modifications (diet, exercise, weight loss)
+- Metformin (biguanide) - Reduces hepatic glucose production and improves insulin sensitivity
+
+## Second-line treatments (add-ons to metformin):
+- Sulfonylureas - Increase insulin secretion
+- DPP-4 inhibitors - Increase incretin levels
+- SGLT2 inhibitors - Reduce glucose reabsorption in kidneys
+- GLP-1 receptor agonists - Increase insulin secretion, reduce glucagon, slow gastric emptying
+- Thiazolidinediones - Improve insulin sensitivity
+
+## Insulin therapy:
+- Usually reserved for when oral medications fail to achieve glycemic targets
+- Basal insulin: Long-acting insulins like glargine, detemir
+- Bolus insulin: Rapid-acting insulins like lispro, aspart
+
+## Monitoring:
+- HbA1c every 3-6 months
+- Blood glucose self-monitoring
+- Regular screening for complications (retinopathy, nephropathy, neuropathy)
+
+# COVID-19 Treatment Overview
+
+COVID-19 treatment approaches have evolved significantly since the beginning of the pandemic. Current strategies focus on severity-based management.
+
+## Mild to moderate disease:
+- Symptomatic treatment: antipyretics, analgesics, hydration
+- Monoclonal antibodies for high-risk patients
+- Antivirals (remdesivir, molnupiravir, Paxlovid) within 5 days of symptom onset for eligible patients
+
+## Severe disease:
+- Oxygen therapy
+- Dexamethasone or other corticosteroids
+- Remdesivir
+- Immunomodulators (tocilizumab, baricitinib) in selected patients
+- Anticoagulation for thromboprophylaxis
+
+## Prevention:
+- Vaccination remains the most effective strategy
+- Updated boosters targeting circulating variants
+- Masking and social distancing in high-risk settings
+
+# Hypertension Management
+
+Hypertension, defined as blood pressure ≥130/80 mmHg, is a major risk factor for cardiovascular disease. Management includes both non-pharmacological and pharmacological approaches.
+
+## Non-pharmacological interventions:
+- DASH diet (rich in fruits, vegetables, whole grains, low-fat dairy)
+- Sodium restriction (<2300 mg/day)
+- Regular physical activity (150 minutes/week)
+- Weight management
+- Alcohol limitation
+- Smoking cessation
+
+## First-line medications:
+- Thiazide diuretics
+- ACE inhibitors
+- Angiotensin II receptor blockers (ARBs)
+- Calcium channel blockers
+
+## Treatment targets:
+- General population: <130/80 mmHg
+- Older adults (>65): individualized targets
+- Comorbid conditions may alter targets
+
+## Monitoring:
+- Regular blood pressure measurements
+- Assessment of medication adherence
+- Monitoring for adverse effects
+- Periodic laboratory evaluations
+            

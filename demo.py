@@ -22,7 +22,7 @@ def demo_setup():
     
     # Create sample medical text if none exists
     if not os.path.exists("./medical_data/sample_medical_info.txt"):
-        with open("./medical_data/sample_medical_info.txt", "w") as f:
+        with open("./medical_data/sample_medical_info.txt", "w", encoding="utf-8") as f:
             f.write("""
 # Diabetes Type 2 Treatment Guidelines
 
@@ -102,7 +102,7 @@ Hypertension, defined as blood pressure ≥130/80 mmHg, is a major risk factor f
     
     # Create sample test queries file
     if not os.path.exists("./test_queries.txt"):
-        with open("./test_queries.txt", "w") as f:
+        with open("./test_queries.txt", "w", encoding="utf-8") as f:
             f.write("""
 What are the first-line treatments for type 2 diabetes?
 How does COVID-19 treatment differ between mild and severe cases?
