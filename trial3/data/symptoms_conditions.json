@@ -1,0 +1,202 @@
+{
+  "symptoms": [
+    {
+      "id": "s1",
+      "name": "Headache",
+      "description": "Pain in any region of the head",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days", "Weeks"],
+      "related_conditions": ["c1", "c2", "c3", "c4", "c5", "c10"]
+    },
+    {
+      "id": "s2",
+      "name": "Light Sensitivity",
+      "description": "Discomfort or pain in the eyes due to light exposure",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days"],
+      "related_conditions": ["c1", "c2", "c5"]
+    },
+    {
+      "id": "s3",
+      "name": "Nausea",
+      "description": "Feeling of sickness with an inclination to vomit",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days"],
+      "related_conditions": ["c1", "c2", "c3", "c8"]
+    },
+    {
+      "id": "s4",
+      "name": "Fever",
+      "description": "Elevated body temperature above normal range",
+      "severity_options": ["Low", "Moderate", "High"],
+      "duration_options": ["Hours", "Days", "Weeks"],
+      "related_conditions": ["c2", "c3", "c6", "c7", "c8"]
+    },
+    {
+      "id": "s5",
+      "name": "Stiff Neck",
+      "description": "Soreness and difficulty moving the neck",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Hours", "Days", "Weeks"],
+      "related_conditions": ["c2", "c7"]
+    },
+    {
+      "id": "s6",
+      "name": "Fatigue",
+      "description": "Feeling of tiredness, lack of energy",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Days", "Weeks", "Months"],
+      "related_conditions": ["c1", "c3", "c4", "c6", "c7", "c8", "c9"]
+    },
+    {
+      "id": "s7",
+      "name": "Shortness of Breath",
+      "description": "Difficulty breathing or feeling breathless",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days", "Weeks"],
+      "related_conditions": ["c3", "c4", "c8", "c9"]
+    },
+    {
+      "id": "s8",
+      "name": "Chest Pain",
+      "description": "Discomfort or pain in the chest area",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days"],
+      "related_conditions": ["c3", "c4", "c9"]
+    },
+    {
+      "id": "s9",
+      "name": "Cough",
+      "description": "Forceful expulsion of air from the lungs",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Days", "Weeks", "Months"],
+      "related_conditions": ["c3", "c6", "c9"]
+    },
+    {
+      "id": "s10",
+      "name": "Joint Pain",
+      "description": "Discomfort or pain in one or more joints",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Days", "Weeks", "Months"],
+      "related_conditions": ["c7", "c10"]
+    },
+    {
+      "id": "s11",
+      "name": "Rash",
+      "description": "Eruption or inflammation of the skin",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Hours", "Days", "Weeks"],
+      "related_conditions": ["c6", "c7", "c10"]
+    },
+    {
+      "id": "s12",
+      "name": "Visual Disturbances",
+      "description": "Changes in vision such as blurring, flashing lights, or blind spots",
+      "severity_options": ["Mild", "Moderate", "Severe"],
+      "duration_options": ["Minutes", "Hours", "Days"],
+      "related_conditions": ["c1", "c5"]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "c1",
+      "name": "Migraine",
+      "description": "A neurological condition characterized by recurrent headaches, often accompanied by nausea and sensitivity to light and sound",
+      "primary_symptoms": ["s1", "s2", "s3", "s12"],
+      "secondary_symptoms": ["s6"],
+      "differentiation_questions": ["q1", "q2", "q3"],
+      "severity": "Moderate to Severe",
+      "urgency": "Non-emergency"
+    },
+    {
+      "id": "c2",
+      "name": "Meningitis",
+      "description": "Inflammation of the protective membranes covering the brain and spinal cord",
+      "primary_symptoms": ["s1", "s4", "s5"],
+      "secondary_symptoms": ["s2", "s3", "s6"],
+      "differentiation_questions": ["q4", "q5", "q6"],
+      "severity": "Severe",
+      "urgency": "Emergency"
+    },
+    {
+      "id": "c3",
+      "name": "Pneumonia",
+      "description": "Infection that inflames air sacs in one or both lungs",
+      "primary_symptoms": ["s4", "s7", "s9"],
+      "secondary_symptoms": ["s3", "s6", "s8"],
+      "differentiation_questions": ["q7", "q8", "q9"],
+      "severity": "Moderate to Severe",
+      "urgency": "Urgent"
+    },
+    {
+      "id": "c4",
+      "name": "Heart Attack",
+      "description": "Blockage of blood flow to the heart muscle",
+      "primary_symptoms": ["s8", "s7"],
+      "secondary_symptoms": ["s1", "s6"],
+      "differentiation_questions": ["q10", "q11", "q12"],
+      "severity": "Severe",
+      "urgency": "Emergency"
+    },
+    {
+      "id": "c5",
+      "name": "Concussion",
+      "description": "Traumatic brain injury affecting brain function",
+      "primary_symptoms": ["s1", "s2", "s12"],
+      "secondary_symptoms": ["s3", "s6"],
+      "differentiation_questions": ["q13", "q14", "q15"],
+      "severity": "Moderate to Severe",
+      "urgency": "Urgent"
+    },
+    {
+      "id": "c6",
+      "name": "Influenza",
+      "description": "Viral infection that attacks the respiratory system",
+      "primary_symptoms": ["s4", "s6", "s9"],
+      "secondary_symptoms": ["s11"],
+      "differentiation_questions": ["q16", "q17", "q18"],
+      "severity": "Mild to Moderate",
+      "urgency": "Non-urgent"
+    },
+    {
+      "id": "c7",
+      "name": "Lyme Disease",
+      "description": "Bacterial infection transmitted by ticks",
+      "primary_symptoms": ["s11", "s4", "s5"],
+      "secondary_symptoms": ["s6", "s10"],
+      "differentiation_questions": ["q19", "q20", "q21"],
+      "severity": "Moderate to Severe",
+      "urgency": "Urgent"
+    },
+    {
+      "id": "c8",
+      "name": "COVID-19",
+      "description": "Infectious disease caused by the SARS-CoV-2 virus",
+      "primary_symptoms": ["s4", "s7", "s9"],
+      "secondary_symptoms": ["s3", "s6"],
+      "differentiation_questions": ["q22", "q23", "q24"],
+      "severity": "Mild to Severe",
+      "urgency": "Varies"
+    },
+    {
+      "id": "c9",
+      "name": "Asthma",
+      "description": "Condition in which airways narrow and swell, producing extra mucus",
+      "primary_symptoms": ["s7", "s9"],
+      "secondary_symptoms": ["s6", "s8"],
+      "differentiation_questions": ["q25", "q26", "q27"],
+      "severity": "Mild to Severe",
+      "urgency": "Varies"
+    },
+    {
+      "id": "c10",
+      "name": "Rheumatoid Arthritis",
+      "description": "Autoimmune disorder that primarily affects joints",
+      "primary_symptoms": ["s10", "s11"],
+      "secondary_symptoms": ["s1", "s6"],
+      "differentiation_questions": ["q28", "q29", "q30"],
+      "severity": "Moderate to Severe",
+      "urgency": "Non-urgent"
+    }
+  ]
+}

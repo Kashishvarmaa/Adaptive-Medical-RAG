@@ -1,0 +1,274 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Does your headache occur primarily on one side of your head?",
+      "target_symptom": "s1",
+      "condition_indication": {
+        "yes": ["c1"],
+        "no": ["c2", "c5"]
+      }
+    },
+    {
+      "id": "q2",
+      "text": "Do you see flashing lights or other visual disturbances before your headache starts?",
+      "target_symptom": "s12",
+      "condition_indication": {
+        "yes": ["c1"],
+        "no": ["c2", "c5"]
+      }
+    },
+    {
+      "id": "q3",
+      "text": "Do your headaches get worse with physical activity or movement?",
+      "target_symptom": "s1",
+      "condition_indication": {
+        "yes": ["c1", "c2"],
+        "no": ["c5"]
+      }
+    },
+    {
+      "id": "q4",
+      "text": "Do you have a high fever along with your headache?",
+      "target_symptom": "s4",
+      "condition_indication": {
+        "yes": ["c2", "c3", "c6", "c7", "c8"],
+        "no": ["c1", "c5"]
+      }
+    },
+    {
+      "id": "q5",
+      "text": "Does bending your neck forward increase your headache pain?",
+      "target_symptom": "s5",
+      "condition_indication": {
+        "yes": ["c2"],
+        "no": ["c1", "c5"]
+      }
+    },
+    {
+      "id": "q6",
+      "text": "Have you recently been in contact with someone with a confirmed case of meningitis?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c2"],
+        "no": []
+      }
+    },
+    {
+      "id": "q7",
+      "text": "Are you coughing up colored (yellow, green, or bloody) mucus?",
+      "target_symptom": "s9",
+      "condition_indication": {
+        "yes": ["c3"],
+        "no": ["c6", "c8", "c9"]
+      }
+    },
+    {
+      "id": "q8",
+      "text": "Do you have sharp chest pain that worsens when you breathe deeply or cough?",
+      "target_symptom": "s8",
+      "condition_indication": {
+        "yes": ["c3"],
+        "no": ["c4", "c9"]
+      }
+    },
+    {
+      "id": "q9",
+      "text": "Have you had a high fever (above 38.5°C or 101.3°F) for more than two days?",
+      "target_symptom": "s4",
+      "condition_indication": {
+        "yes": ["c2", "c3"],
+        "no": ["c6", "c8"]
+      }
+    },
+    {
+      "id": "q10",
+      "text": "Do you have crushing or squeezing pain in the center of your chest lasting more than a few minutes?",
+      "target_symptom": "s8",
+      "condition_indication": {
+        "yes": ["c4"],
+        "no": ["c3", "c9"]
+      }
+    },
+    {
+      "id": "q11",
+      "text": "Does your chest pain radiate to your jaw, left arm, or back?",
+      "target_symptom": "s8",
+      "condition_indication": {
+        "yes": ["c4"],
+        "no": ["c3", "c9"]
+      }
+    },
+    {
+      "id": "q12",
+      "text": "Are you experiencing cold sweats or sudden dizziness along with chest discomfort?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c4"],
+        "no": []
+      }
+    },
+    {
+      "id": "q13",
+      "text": "Have you recently experienced a blow to the head or other head trauma?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c5"],
+        "no": ["c1", "c2"]
+      }
+    },
+    {
+      "id": "q14",
+      "text": "Are you having difficulty concentrating or remembering things since your headache began?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c5"],
+        "no": []
+      }
+    },
+    {
+      "id": "q15",
+      "text": "Do bright lights or loud sounds make your headache significantly worse?",
+      "target_symptom": "s2",
+      "condition_indication": {
+        "yes": ["c1", "c5"],
+        "no": []
+      }
+    },
+    {
+      "id": "q16",
+      "text": "Did your symptoms come on suddenly and severely over the course of a day?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c6"],
+        "no": ["c3", "c8"]
+      }
+    },
+    {
+      "id": "q17",
+      "text": "Are you experiencing body aches or muscle pain throughout your body?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c6", "c7", "c8"],
+        "no": []
+      }
+    },
+    {
+      "id": "q18",
+      "text": "Have you been in contact with someone who has the flu in the past week?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c6"],
+        "no": []
+      }
+    },
+    {
+      "id": "q19",
+      "text": "Have you noticed a circular, expanding rash that resembles a bullseye?",
+      "target_symptom": "s11",
+      "condition_indication": {
+        "yes": ["c7"],
+        "no": ["c6", "c10"]
+      }
+    },
+    {
+      "id": "q20",
+      "text": "Have you been in wooded or grassy areas and potentially been exposed to ticks in the past 30 days?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c7"],
+        "no": []
+      }
+    },
+    {
+      "id": "q21",
+      "text": "Are your joint pains migratory, moving from one joint to another over time?",
+      "target_symptom": "s10",
+      "condition_indication": {
+        "yes": ["c7"],
+        "no": ["c10"]
+      }
+    },
+    {
+      "id": "q22",
+      "text": "Have you lost your sense of taste or smell?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c8"],
+        "no": ["c3", "c6"]
+      }
+    },
+    {
+      "id": "q23",
+      "text": "Have you been in contact with someone who tested positive for COVID-19 in the past 14 days?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c8"],
+        "no": []
+      }
+    },
+    {
+      "id": "q24",
+      "text": "Are you experiencing unusual fatigue that is out of proportion to your other symptoms?",
+      "target_symptom": "s6",
+      "condition_indication": {
+        "yes": ["c8"],
+        "no": []
+      }
+    },
+    {
+      "id": "q25",
+      "text": "Do you have a history of asthma or allergic conditions?",
+      "target_symptom": null,
+      "condition_indication": {
+        "yes": ["c9"],
+        "no": []
+      }
+    },
+    {
+      "id": "q26",
+      "text": "Do you hear a whistling or wheezing sound when you breathe out?",
+      "target_symptom": "s7",
+      "condition_indication": {
+        "yes": ["c9"],
+        "no": ["c3", "c8"]
+      }
+    },
+    {
+      "id": "q27",
+      "text": "Do your breathing problems worsen at night or early morning?",
+      "target_symptom": "s7",
+      "condition_indication": {
+        "yes": ["c9"],
+        "no": []
+      }
+    },
+    {
+      "id": "q28",
+      "text": "Do your joint symptoms include swelling, warmth, and morning stiffness lasting more than an hour?",
+      "target_symptom": "s10",
+      "condition_indication": {
+        "yes": ["c10"],
+        "no": ["c7"]
+      }
+    },
+    {
+      "id": "q29",
+      "text": "Are the same joints affected on both sides of your body (symmetrical pattern)?",
+      "target_symptom": "s10",
+      "condition_indication": {
+        "yes": ["c10"],
+        "no": ["c7"]
+      }
+    },
+    {
+      "id": "q30",
+      "text": "Have you experienced joint pain and stiffness for more than six weeks?",
+      "target_symptom": "s10",
+      "condition_indication": {
+        "yes": ["c10"],
+        "no": []
+      }
+    }
+  ]
+}

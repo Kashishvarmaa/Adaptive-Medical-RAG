@@ -1,0 +1,165 @@
+{
+  "medical_knowledge": [
+    {
+      "condition_id": "c1",
+      "name": "Migraine",
+      "medical_description": "Migraine is a neurological disorder characterized by recurrent moderate to severe headaches, often affecting one side of the head and accompanied by various autonomic nervous system symptoms. Migraines typically last between 4 and 72 hours and are often preceded or accompanied by sensory warning signs and symptoms such as flashes of light, blind spots, tingling in the arms and legs, nausea, vomiting, and increased sensitivity to light and sound.",
+      "epidemiology": "Migraines affect approximately 12% of the population. They are three times more common in women than men, with hormonal factors contributing to this difference.",
+      "treatment_approaches": [
+        "Acute treatments: Triptans, NSAIDs, anti-nausea medications",
+        "Preventive treatments: Beta-blockers, antiepileptic drugs, CGRP antagonists",
+        "Lifestyle modifications: Identifying and avoiding triggers, maintaining regular sleep patterns"
+      ],
+      "diagnostic_criteria": "Recurrent headaches with at least two of the following characteristics: unilateral location, pulsating quality, moderate or severe intensity, aggravation by physical activity; and at least one of the following: nausea/vomiting, photophobia and phonophobia.",
+      "evidence_resources": [
+        "American Headache Society Guidelines",
+        "International Classification of Headache Disorders (ICHD-3)"
+      ]
+    },
+    {
+      "condition_id": "c2",
+      "name": "Meningitis",
+      "medical_description": "Meningitis is inflammation of the meninges, the protective membranes covering the brain and spinal cord. It can be caused by bacteria, viruses, fungi, or other microorganisms. Bacterial meningitis is life-threatening and requires immediate medical attention. The classic triad of meningitis symptoms includes headache, fever, and neck stiffness.",
+      "epidemiology": "The incidence varies by region and pathogen. Bacterial meningitis occurs in about 3-5 cases per 100,000 population annually in developed countries. Viral meningitis is more common but generally less severe.",
+      "treatment_approaches": [
+        "Bacterial meningitis: Immediate antibiotic treatment (usually third-generation cephalosporins)",
+        "Viral meningitis: Supportive care, antiviral medications for certain causes",
+        "Adjunctive therapy: Corticosteroids in some cases"
+      ],
+      "diagnostic_criteria": "Clinical features plus confirmation of infection in cerebrospinal fluid (CSF) via lumbar puncture. CSF findings include elevated white blood cell count, elevated protein, and decreased glucose.",
+      "evidence_resources": [
+        "Infectious Diseases Society of America (IDSA) Guidelines",
+        "World Health Organization protocols"
+      ]
+    },
+    {
+      "condition_id": "c3",
+      "name": "Pneumonia",
+      "medical_description": "Pneumonia is an infection that inflames the air sacs in one or both lungs. The air sacs may fill with fluid or pus, causing cough with phlegm or pus, fever, chills, and difficulty breathing. Various microorganisms, including bacteria, viruses, and fungi, can cause pneumonia.",
+      "epidemiology": "Community-acquired pneumonia affects approximately 5-11 per 1,000 adults annually. Risk increases with age, smoking, and comorbidities. Hospital-acquired pneumonia has higher morbidity and mortality.",
+      "treatment_approaches": [
+        "Bacterial pneumonia: Antibiotics based on likely pathogens and local resistance patterns",
+        "Viral pneumonia: Supportive care, antivirals for influenza",
+        "Severe cases: Oxygen therapy, hospitalization"
+      ],
+      "diagnostic_criteria": "Clinical symptoms plus infiltrate on chest X-ray or CT scan. Additional tests may include sputum culture, blood tests, and occasionally bronchoscopy.",
+      "evidence_resources": [
+        "American Thoracic Society guidelines",
+        "Infectious Diseases Society of America pneumonia guidelines"
+      ]
+    },
+    {
+      "condition_id": "c4",
+      "name": "Heart Attack",
+      "medical_description": "A heart attack (myocardial infarction) occurs when blood flow to a part of the heart is blocked, usually by a blood clot. Without oxygenated blood, the heart muscle begins to die. The longer the blockage remains untreated, the greater the damage to the heart.",
+      "epidemiology": "Approximately 805,000 people in the United States have a heart attack each year. About 605,000 are first heart attacks. Risk factors include age, smoking, high blood pressure, high cholesterol, diabetes, and family history.",
+      "treatment_approaches": [
+        "Emergency treatments: Aspirin, thrombolytics (clot busters), antiplatelet agents",
+        "Procedures: Coronary angioplasty and stenting, coronary artery bypass graft surgery",
+        "Long-term management: Medications to control risk factors, cardiac rehabilitation"
+      ],
+      "diagnostic_criteria": "Symptoms plus elevated cardiac biomarkers (troponin, CK-MB) and characteristic ECG changes. Imaging studies like echocardiography may show wall motion abnormalities.",
+      "evidence_resources": [
+        "American Heart Association guidelines",
+        "European Society of Cardiology STEMI/NSTEMI guidelines"
+      ]
+    },
+    {
+      "condition_id": "c5",
+      "name": "Concussion",
+      "medical_description": "A concussion is a traumatic brain injury that affects brain function. Effects are usually temporary and can include headaches, concentration problems, memory issues, balance problems, and coordination issues. Concussions are typically caused by a blow to the head but can also result from violent shaking of the head and upper body.",
+      "epidemiology": "An estimated 1.6-3.8 million sports-related concussions occur in the United States each year. Many concussions go undiagnosed. Children and adolescents are at higher risk.",
+      "treatment_approaches": [
+        "Initial management: Physical and cognitive rest for 24-48 hours",
+        "Graduated return to activities: Phased approach to returning to normal activities",
+        "Persistent symptoms: Specialized care, potentially including physical therapy, vestibular therapy"
+      ],
+      "diagnostic_criteria": "Clinical assessment using tools like the Sport Concussion Assessment Tool (SCAT5). Neuroimaging is typically normal but may be used to rule out serious injury.",
+      "evidence_resources": [
+        "International Conference on Concussion in Sport consensus statement",
+        "CDC concussion diagnosis and management guidelines"
+      ]
+    },
+    {
+      "condition_id": "c6",
+      "name": "Influenza",
+      "medical_description": "Influenza (flu) is a contagious respiratory illness caused by influenza viruses that infect the nose, throat, and sometimes the lungs. It can cause mild to severe illness and can lead to death in vulnerable populations. The flu is different from a cold and usually comes on suddenly.",
+      "epidemiology": "Annual influenza epidemics result in 3-5 million cases of severe illness worldwide and about 290,000-650,000 deaths. In the United States, seasonal influenza affects 9-45 million people annually.",
+      "treatment_approaches": [
+        "Antiviral medications: Oseltamivir (Tamiflu), zanamivir, baloxavir marboxil",
+        "Supportive care: Rest, fluids, antipyretics",
+        "Prevention: Annual vaccination"
+      ],
+      "diagnostic_criteria": "Clinical symptoms plus rapid influenza diagnostic tests, RT-PCR, or viral culture. During peak season, clinical diagnosis based on symptoms is often sufficient.",
+      "evidence_resources": [
+        "CDC influenza guidelines",
+        "World Health Organization influenza recommendations"
+      ]
+    },
+    {
+      "condition_id": "c7",
+      "name": "Lyme Disease",
+      "medical_description": "Lyme disease is caused by the bacterium Borrelia burgdorferi and is transmitted to humans through the bite of infected black-legged ticks. Typical symptoms include fever, headache, fatigue, and a characteristic skin rash called erythema migrans. If left untreated, infection can spread to joints, the heart, and the nervous system.",
+      "epidemiology": "Approximately 476,000 people in the United States are diagnosed and treated for Lyme disease each year. It is most common in the Northeast, Upper Midwest, and Pacific Northwest regions.",
+      "treatment_approaches": [
+        "Early localized disease: Doxycycline, amoxicillin, or cefuroxime for 10-14 days",
+        "Neurologic or cardiac manifestations: Intravenous antibiotics",
+        "Post-treatment Lyme disease syndrome: Symptom management"
+      ],
+      "diagnostic_criteria": "Clinical features, history of potential exposure, and serologic testing using two-tier testing approach: EIA/IFA followed by Western blot.",
+      "evidence_resources": [
+        "Infectious Diseases Society of America guidelines",
+        "CDC Lyme disease diagnostic and treatment recommendations"
+      ]
+    },
+    {
+      "condition_id": "c8",
+      "name": "COVID-19",
+      "medical_description": "COVID-19 is a respiratory illness caused by the SARS-CoV-2 virus. The disease can range from mild to severe and can affect multiple organ systems. Common symptoms include fever, cough, shortness of breath, fatigue, loss of taste or smell, and body aches.",
+      "epidemiology": "Global pandemic affecting millions worldwide. Risk factors for severe disease include advanced age, underlying medical conditions, and immunocompromised status.",
+      "treatment_approaches": [
+        "Mild to moderate disease: Symptomatic treatment, monitoring",
+        "Severe disease: Antiviral medications, immunomodulators, oxygen therapy",
+        "Prevention: Vaccination, public health measures"
+      ],
+      "diagnostic_criteria": "Molecular tests (RT-PCR), antigen tests, or antibody tests. Clinical diagnosis based on symptoms and epidemiological factors.",
+      "evidence_resources": [
+        "NIH COVID-19 Treatment Guidelines",
+        "World Health Organization COVID-19 clinical management guidelines"
+      ]
+    },
+    {
+      "condition_id": "c9",
+      "name": "Asthma",
+      "medical_description": "Asthma is a chronic respiratory condition characterized by inflammation and narrowing of the airways, leading to recurring episodes of wheezing, shortness of breath, chest tightness, and coughing. Symptoms can be triggered by allergens, irritants, exercise, weather changes, or respiratory infections.",
+      "epidemiology": "Affects approximately 339 million people worldwide and 25 million in the United States. Often begins in childhood, with higher prevalence in developed countries.",
+      "treatment_approaches": [
+        "Quick-relief medications: Short-acting beta agonists (SABAs)",
+        "Long-term control: Inhaled corticosteroids, long-acting beta agonists (LABAs), leukotriene modifiers",
+        "Severe asthma: Biologics targeting specific inflammatory pathways"
+      ],
+      "diagnostic_criteria": "Clinical history plus demonstration of variable expiratory airflow limitation using spirometry, peak flow measurements, or bronchoprovocation testing.",
+      "evidence_resources": [
+        "Global Initiative for Asthma (GINA) guidelines",
+        "National Asthma Education and Prevention Program (NAEPP) guidelines"
+      ]
+    },
+    {
+      "condition_id": "c10",
+      "name": "Rheumatoid Arthritis",
+      "medical_description": "Rheumatoid arthritis (RA) is a chronic autoimmune inflammatory disorder that primarily affects joints but can also affect other body systems. It causes painful swelling that can eventually result in bone erosion and joint deformity. RA occurs when the immune system mistakenly attacks the body's own tissues.",
+      "epidemiology": "Affects approximately 1% of the global population. Women are 2-3 times more likely to develop RA than men. Most common onset is between ages 30 and 60.",
+      "treatment_approaches": [
+        "Disease-modifying antirheumatic drugs (DMARDs): Methotrexate, hydroxychloroquine, sulfasalazine",
+        "Biologic agents: TNF inhibitors, IL-6 inhibitors, T-cell costimulation modulators",
+        "JAK inhibitors: Tofacitinib, baricitinib, upadacitinib",
+        "Supportive care: Physical therapy, occupational therapy, joint protection"
+      ],
+      "diagnostic_criteria": "Clinical symptoms plus laboratory findings (rheumatoid factor, anti-CCP antibodies, elevated inflammatory markers) and imaging (X-rays, ultrasound, MRI showing joint damage or inflammation).",
+      "evidence_resources": [
+        "American College of Rheumatology guidelines",
+        "European League Against Rheumatism (EULAR) recommendations"
+      ]
+    }
+  ]
+}
