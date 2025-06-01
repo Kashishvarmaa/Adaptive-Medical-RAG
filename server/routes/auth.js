@@ -3,7 +3,6 @@ const router = express.Router();
 const GuestSession = require('../models/GuestSession');
 const guestLimiter = require('../middleware/rateLimit');
 
-// Guest limit check
 router.get('/guest-limit', guestLimiter, async (req, res) => {
   try {
     let sessionId = req.headers['x-session-id'];
@@ -18,6 +17,18 @@ router.get('/guest-limit', guestLimiter, async (req, res) => {
       await session.save();
     }
 
+    // Check if an hour has passed since the last reset
+    const now = new Date();
+    const lastReset = new Date(session.lastReset);
+    const hoursSinceLastReset = (now - lastReset) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+    if (hoursSinceLastReset >= 1) {
+      // Reset message count and update lastReset
+      session.messageCount = 0;
+      session.lastReset = now;
+      await session.save();
+    }
+
     session.messageCount = session.messageCount || 0;
     const remaining = Math.max(0, 3 - session.messageCount);
     res.json({ remaining });
@@ -27,7 +38,6 @@ router.get('/guest-limit', guestLimiter, async (req, res) => {
   }
 });
 
-// Placeholder for auth routes (signup, login, google)
 router.post('/signup', (req, res) => {
   res.json({ message: 'Signup successful' });
 });

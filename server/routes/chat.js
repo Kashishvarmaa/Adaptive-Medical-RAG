@@ -24,6 +24,16 @@ router.post('/', async (req, res) => {
         await session.save();
       }
 
+      // Check if an hour has passed since the last reset
+      const now = new Date();
+      const lastReset = new Date(session.lastReset);
+      const hoursSinceLastReset = (now - lastReset) / (1000 * 60 * 60); // Convert milliseconds to hours
+
+      if (hoursSinceLastReset >= 1) {
+        session.messageCount = 0;
+        session.lastReset = now;
+      }
+
       if (session.messageCount >= 3) {
         return res.status(403).json({ message: 'Guest limit reached' });
       }
