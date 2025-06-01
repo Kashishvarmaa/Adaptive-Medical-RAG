@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { auth, RecaptchaVerifier } from '../../firebase';
+import { auth } from '../../firebase';
+import { RecaptchaVerifier } from 'firebase/auth';
 import { motion } from 'framer-motion';
-import { EnvelopeIcon, LockClosedIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { EnvelopeIcon, LockClosedIcon, PhoneIcon, EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,7 @@ function Login() {
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [error, setError] = useState('');
   const [showOtp, setShowOtp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, googleLogin, phoneLogin } = useAuth();
   const navigate = useNavigate();
 
@@ -71,6 +73,10 @@ function Login() {
 
   return (
     <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 text-center">
+        Welcome Back
+      </h2>
+
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -106,13 +112,20 @@ function Login() {
           <div className="relative">
             <LockClosedIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <input
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               className="w-full pl-10 p-3 bg-black/50 border border-white/10 rounded-lg text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-200"
+            >
+              {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+            </button>
           </div>
         </div>
 

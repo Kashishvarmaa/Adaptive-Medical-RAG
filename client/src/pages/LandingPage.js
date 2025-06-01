@@ -6,7 +6,6 @@ import Signup from '../components/Auth/Signup';
 import { HeartIcon, ArrowRightIcon, SparklesIcon } from '@heroicons/react/24/solid';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
-import AxiosMockAdapter from 'axios-mock-adapter';
 import { motion } from 'framer-motion';
 
 function LandingPage() {
@@ -18,18 +17,6 @@ function LandingPage() {
   const { checkGuestLimit, currentUser } = useAuth();
   const navigate = useNavigate();
 
-  // Mock axios for local testing
-  useEffect(() => {
-    const mock = new AxiosMockAdapter(axios);
-    mock.onPost('/api/chat').reply(200, {
-      content: 'This is a mock response from the Medical RAG Chatbot.',
-    });
-    mock.onGet('/api/auth/guest-limit').reply(200, {
-      remaining: 3 - messages.filter((msg) => msg.type === 'user').length,
-    });
-    return () => mock.reset();
-  }, [messages]);
-
   // Scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,7 +25,9 @@ function LandingPage() {
   // Check guest limit on mount
   useEffect(() => {
     if (!currentUser) {
-      checkGuestLimit().then((canProceed) => {
+      const sessionId = localStorage.getItem('sessionId');
+      const headers = sessionId ? { 'X-Session-ID': sessionId } : {};
+      checkGuestLimit(headers).then((canProceed) => {
         if (!canProceed) {
           setShowAuth(true);
           setMessages((prev) => [
@@ -53,7 +42,10 @@ function LandingPage() {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const canProceed = await checkGuestLimit();
+    const sessionId = localStorage.getItem('sessionId');
+    const headers = sessionId ? { 'X-Session-ID': sessionId } : {};
+
+    const canProceed = await checkGuestLimit(headers);
     if (!canProceed) {
       setShowAuth(true);
       setMessages((prev) => [
@@ -66,8 +58,16 @@ function LandingPage() {
     setMessages([...messages, { type: 'user', content: input }]);
 
     try {
-      const res = await axios.post('/api/chat', { message: input, chatId: null });
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/chat`,
+        { message: input, chatId: null },
+        { headers }
+      );
       const { content } = res.data;
+      const newSessionId = res.headers['x-session-id'];
+      if (newSessionId) {
+        localStorage.setItem('sessionId', newSessionId);
+      }
       setMessages((prev) => [...prev, { type: 'bot', content }]);
       setInput('');
     } catch (err) {
@@ -206,19 +206,19 @@ function LandingPage() {
                   onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ask a medical question..."
                   className="flex-1 p-3 border-0 rounded-l-lg bg-black/50 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-purple-500 shadow-inner"
-                  disabled={messages.filter((msg) => msg.type === 'user').length >= 3}
+                  disabled={messages.filter((msg) => msg.type === 'user').length >= 3 && !currentUser}
                 />
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleSend}
                   className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-r-lg hover:from-purple-600 hover:to-pink-600 disabled:opacity-50 shadow-md"
-                  disabled={messages.filter((msg) => msg.type === 'user').length >= 3}
+                  disabled={messages.filter((msg) => msg.type === 'user').length >= 3 && !currentUser}
                 >
                   <ArrowRightIcon className="h-5 w-5" />
                 </motion.button>
               </div>
-              {messages.filter((msg) => msg.type === 'user').length > 0 && (
+              {messages.filter((msg) => msg.type === 'user').length > 0 && !currentUser && (
                 <p className="text-sm text-gray-400 mt-2">
                   {3 - messages.filter((msg) => msg.type === 'user').length} guest attempts remaining.
                 </p>

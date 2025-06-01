@@ -14,24 +14,39 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const signup = async (email, password) => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const token = await userCredential.user.getIdToken();
-    await axios.post('/api/auth/signup', { token });
-    setCurrentUser(userCredential.user);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/signup`, { token });
+      setCurrentUser(userCredential.user);
+    } catch (err) {
+      console.error('Signup error:', err);
+      throw err; // Re-throw to handle in the component
+    }
   };
 
   const login = async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const token = await userCredential.user.getIdToken();
-    await axios.post('/api/auth/login', { token });
-    setCurrentUser(userCredential.user);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, { token });
+      setCurrentUser(userCredential.user);
+    } catch (err) {
+      console.error('Login error:', err);
+      throw err; // Re-throw to handle in the component
+    }
   };
 
   const googleLogin = async () => {
-    const userCredential = await signInWithPopup(auth, googleProvider);
-    const token = await userCredential.user.getIdToken();
-    await axios.post('/api/auth/google', { token });
-    setCurrentUser(userCredential.user);
+    try {
+      const userCredential = await signInWithPopup(auth, googleProvider);
+      const token = await userCredential.user.getIdToken();
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/google`, { token });
+      setCurrentUser(userCredential.user);
+    } catch (err) {
+      console.error('Google login error:', err);
+      throw err; // Re-throw to handle in the component
+    }
   };
 
   const phoneLogin = async (phone, appVerifier) => {
@@ -44,14 +59,18 @@ export function AuthProvider({ children }) {
     setCurrentUser(null);
   };
 
-  const checkGuestLimit = async () => {
+  const checkGuestLimit = async (headers = {}) => {
     if (!currentUser) {
       try {
-        const res = await axios.get('/api/auth/guest-limit');
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/guest-limit`, { headers });
         setGuestSessions(3 - res.data.remaining);
+        const newSessionId = res.headers['x-session-id'];
+        if (newSessionId) {
+          localStorage.setItem('sessionId', newSessionId);
+        }
         return res.data.remaining > 0;
       } catch (err) {
-        // Mock for local testing
+        console.error('Guest limit check failed:', err);
         if (guestSessions < 3) {
           setGuestSessions(guestSessions + 1);
           return true;
