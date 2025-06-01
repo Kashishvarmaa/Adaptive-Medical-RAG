@@ -46,9 +46,18 @@ export function AuthProvider({ children }) {
 
   const checkGuestLimit = async () => {
     if (!currentUser) {
-      const res = await axios.get('/api/auth/guest-limit');
-      setGuestSessions(3 - res.data.remaining);
-      return res.data.remaining > 0;
+      try {
+        const res = await axios.get('/api/auth/guest-limit');
+        setGuestSessions(3 - res.data.remaining);
+        return res.data.remaining > 0;
+      } catch (err) {
+        // Mock for local testing
+        if (guestSessions < 3) {
+          setGuestSessions(guestSessions + 1);
+          return true;
+        }
+        return false;
+      }
     }
     return true;
   };

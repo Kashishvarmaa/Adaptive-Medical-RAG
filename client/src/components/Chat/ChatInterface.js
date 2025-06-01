@@ -14,7 +14,7 @@ function ChatInterface({ user }) {
   const [cotData, setCotData] = useState([]);
   const [gotData, setGotData] = useState(null);
   const messagesEndRef = useRef(null);
-  const { checkGuestLimit } = useAuth();
+  const { checkGuestLimit, guestSessions } = useAuth(); // Destructure guestSessions
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -164,7 +164,7 @@ function ChatInterface({ user }) {
           onKeyPress={(e) => e.key === 'Enter' && handleSend()}
           className="w-full p-2 border rounded dark:bg-gray-700 dark:text-white"
           placeholder="Describe your symptoms..."
-          disabled={guestSessions >= 3 && !user}
+          disabled={guestSessions >= 3 && !user} // Use guestSessions from useAuth
         />
       </div>
       <div className="disclaimer">
